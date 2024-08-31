@@ -9,6 +9,7 @@ class Album(models.Model):
     summary = models.TextField(max_length=80, null=True, blank=True, verbose_name='Описание')
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
     date_created = models.DateField(auto_now_add=True, verbose_name="Дата создания")
+    is_public = models.BooleanField(default=True, verbose_name='Публичный')
 
     class Meta:
         db_table = 'album'

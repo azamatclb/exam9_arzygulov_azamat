@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>{{ user_obj }}</h1>
+    <p><strong>Username:</strong> {{ user_obj.username }}</p>
+    <p><strong>Last name:</strong> {{ user_obj.last_name }}</p>
+
+    {% if user_obj.first_name and user_obj.last_name %}
+    <p><strong>Full Name:</strong> {{ user_obj.first_name }} {{ user_obj.last_name }}</p>
+    {% endif %}
+
+    <div class="mt-4">
+        <h2>Фото</h2>
+        {% if user_obj.picture_set.exists %}
+        <div class="row">
+            {% for picture in user_obj.picture_set.all %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <a href="{% url 'webapp:picture_detail' picture.id %}">
+                        <img src="{{ picture.image.url }}" class="card-img-top" alt="{{ picture.summary }}"
+                             style="object-fit: cover; height: 200px;">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ picture.summary }}</h5>
+                        <p class="card-text">
+                            <strong>Дата добавления:</strong> {{ picture.date_created }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>У пользователя нет фотографий.</p>
+        {% endif %}
+    </div>
+
+    <div class="mt-4">
+        <h2>Альбомы</h2>
+        {% if user_obj.album_set.exists %}
+        <div class="row">
+            {% for album in user_obj.album_set.all %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <a href="{% url 'webapp:album_detail' album.id %}">
+                        <img src="{{ album.cover_image.url }}" class="card-img-top" alt="{{ album.title }}"
+                             style="object-fit: cover; height: 200px;">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ album.title }}</h5>
+                        <p class="card-text">
+                            <strong>Дата создания:</strong> {{ album.date_created }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>У пользователя нет альбомов.</p>
+        {% endif %}
+
+        {% if request.user == user_obj %}
+        <div class="mt-4">
+            <a href="{% url 'webapp:album_create' %}" class="btn btn-primary">Добавить альбом</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

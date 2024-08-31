@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ album.title }}</h2>
+    <p>{{ album.summary }}</p>
+    <div class="row">
+        {% for picture in pictures %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <img src="{{ picture.image.url }}" class="card-img-top" alt="{{ picture.summary }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ picture.summary }}</h5>
+                    <a href="{% url 'webapp:picture_detail' picture.pk %}" class="btn btn-info">Посмотреть</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>В этом альбоме нет фотографий.</p>
+        {% endfor %}
+    </div>
+    <div class="pagination">
+        {% if is_paginated %}
+        <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; первая</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+                    {% endif %}
+                    <span class="current">
+                        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                    </span>
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+                    {% endif %}
+                </span>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

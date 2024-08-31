@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+<title>Registration</title>
+{% endblock %}
+
+{% block content %}
+<div class="form border pt-4 pb-4">
+    <h3 class="text-center"><img src="{% static 'logo.jpeg' %}" alt="logo" style="width: 150px;"></h3>
+    <p class="text-center fs-6">Зарегистрируйтесь, чтобы увидеть фотографии и видео от своих друзей.</p>
+
+    <form action="{% url 'account:registration' %}" method="post" enctype="multipart/form-data" class="text-center">
+        {% csrf_token %}
+        <div class="errors text-danger">
+            {{ form.non_field_errors }}
+            {{ form.username.errors }}
+            {{ form.password.errors }}
+            {{ form.password_confirm.errors }}
+        </div>
+
+        <div class="form-group mb-2">
+            <input type="text" name="username" id="username" placeholder="Имя пользователя" required
+                   value="{{ form.username.value|default_if_none:'' }}">
+        </div>
+        {{ form.last_name.errors }}
+        <div class="form-group mb-2">
+            <input type="text" name="last_name" id="last_name" placeholder="Фамилия" required
+                   value="{{ form.last_name.value|default_if_none:'' }}">
+        </div>
+        {{ form.password.errors }}
+        <div class="form-group mb-2">
+            <input type="password" name="password" id="password" placeholder="Пароль" required>
+        </div>
+        {{ form.password_confirm.errors }}
+        <div class="form-group mb-2">
+            <input type="password" name="password_confirm" id="password_confirm" placeholder="Подтвердите пароль"
+                   required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Регистрация</button>
+    </form>
+</div>
+
+<div class="login border pb-3 pt-3 mt-3">
+    <h6 class="text-center">Уже есть аккаунт? <a href="{% url 'account:login' %}">Войти</a></h6>
+</div>
+{% endblock %}
