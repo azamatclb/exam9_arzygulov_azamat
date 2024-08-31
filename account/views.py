@@ -3,9 +3,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView
 
 from account.form import UserRegistrationForm
+from webapp.models import Picture, Album
 
 # Create your views here.
 
@@ -36,10 +37,17 @@ def logout_view(request):
     return redirect('webapp:pictures')
 
 
-class ProfileView(DetailView):
+class ProfileView(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'profile.html'
     context_object_name = 'user_obj'
 
-    def get_object(self):
-        return get_object_or_404(User, pk=self.kwargs['pk'])
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        if self.request.user == user:
+            context['pictures'] = Picture.objects.filter(author=user).order_by('-date_created')
+        else:
+            context['pictures'] = Picture.objects.filter(author=user, is_public=True).order_by('-date_created')
+        context['albums'] = Album.objects.filter(author=user)
+        return context

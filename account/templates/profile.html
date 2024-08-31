@@ -14,9 +14,9 @@
 
     <div class="mt-4">
         <h2>Фото</h2>
-        {% if user_obj.picture_set.exists %}
+        {% if pictures %}
         <div class="row">
-            {% for picture in user_obj.picture_set.all %}
+            {% for picture in pictures %}
             <div class="col-md-4 mb-4">
                 <div class="card">
                     <a href="{% url 'webapp:picture_detail' picture.id %}">
@@ -40,9 +40,9 @@
 
     <div class="mt-4">
         <h2>Альбомы</h2>
-        {% if user_obj.album_set.exists %}
+        {% if albums %}
         <div class="row">
-            {% for album in user_obj.album_set.all %}
+            {% for album in albums %}
             <div class="col-md-4 mb-4">
                 <div class="card">
                     <a href="{% url 'webapp:album_detail' album.id %}">

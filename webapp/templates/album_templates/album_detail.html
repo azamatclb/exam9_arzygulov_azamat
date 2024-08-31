@@ -1,8 +1,17 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <div class="container mt-4">
     <h2>{{ album.title }}</h2>
     <p>{{ album.summary }}</p>
+    <p><a href="{% url 'account:profile' album.author.id %}">{{album.author}}</a>'s album</p>
+
+    {% if request.user == album.author %}
+    <div class="mb-4">
+        <a href="{% url 'webapp:picture_add' %}?album={{ album.pk }}" class="btn btn-primary">Добавить фотографию</a>
+    </div>
+    {% endif %}
+
     <div class="row">
         {% for picture in pictures %}
         <div class="col-md-4">
@@ -18,21 +27,22 @@
         <p>В этом альбоме нет фотографий.</p>
         {% endfor %}
     </div>
+
     <div class="pagination">
         {% if is_paginated %}
         <span class="step-links">
-                    {% if page_obj.has_previous %}
-                        <a href="?page=1">&laquo; первая</a>
-                        <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
-                    {% endif %}
-                    <span class="current">
-                        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
-                    </span>
-                    {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
-                    {% endif %}
-                </span>
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+            {% endif %}
+            <span class="current">
+                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+            {% endif %}
+        </span>
         {% endif %}
     </div>
 </div>
