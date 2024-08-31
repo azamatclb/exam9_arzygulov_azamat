@@ -30,11 +30,10 @@
                     Никто
                 {% endif %}
             </p>
-
             <p class="card-text">
                 <strong>Автор:</strong>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'account:profile' picture.author.id %}">{{ picture.author }}</a>
+                    <a href="{% url 'account:profile' picture.author.id %}">{{ picture.author.get_full_name }}</a>
                 {% else %}
                     {{ picture.author.get_full_name }}
                 {% endif %}
@@ -44,6 +43,19 @@
                 <div class="mt-3">
                     <a href="{% url 'webapp:picture_update' picture.id %}" class="btn btn-outline-primary">Редактировать</a>
                     <a href="{% url 'webapp:picture_delete' picture.id %}" class="btn btn-outline-danger">Удалить</a>
+
+                    {% if picture.token %}
+                        <p class="mt-3">Ссылка для доступа:
+                            <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'webapp:picture_detail_with_token' picture.token %}">
+                                {{ request.scheme }}://{{ request.get_host }}{% url 'webapp:picture_detail_with_token' picture.token %}
+                            </a>
+                        </p>
+                    {% else %}
+                        <form method="post" class="mt-3">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-success">Сгенерировать ссылку</button>
+                        </form>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

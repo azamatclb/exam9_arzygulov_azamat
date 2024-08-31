@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -6,10 +5,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from webapp.models import Album, Picture
 from webapp.forms import AlbumForm
 
-
 from django.views.generic import DetailView
 from django.shortcuts import get_object_or_404
 from webapp.models import Album, Picture
+
 
 class AlbumDetailView(DetailView):
     model = Album

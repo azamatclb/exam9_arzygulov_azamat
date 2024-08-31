@@ -1,4 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.http import HttpResponseForbidden
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView
 
@@ -62,3 +64,32 @@ class PictureDetailView(LoginRequiredMixin, DetailView):
     model = Picture
     template_name = 'picture_templates/picture_detail.html'
     context_object_name = 'picture'
+
+    def get_object(self, queryset=None):
+        token = self.kwargs.get('token')
+        if token:
+            return get_object_or_404(Picture, token=token)
+        return super().get_object(queryset)
+
+    def post(self, request, *args, **kwargs):
+        picture = self.get_object()
+        if request.user == picture.author and not picture.token:
+            picture.save()
+        return redirect(reverse('webapp:picture_detail', kwargs={'token': picture.token}))
+
+
+class PictureDetailWithTokenView(DetailView):
+    model = Picture
+    template_name = 'picture_detail.html'
+
+    def get_object(self):
+        token = self.kwargs.get('token')
+        picture = get_object_or_404(Picture, token=token)
+
+        if picture.is_private and not self.request.user.is_authenticated:
+            return HttpResponseForbidden("Вы не авторизованы для просмотра этой фотографии.")
+
+        return picture
+
+    def get_success_url(self):
+        return reverse('webapp:picture_detail_with_token', kwargs={'token': self.object.token})
